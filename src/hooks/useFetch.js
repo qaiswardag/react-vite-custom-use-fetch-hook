@@ -9,6 +9,9 @@ export const useFetch = function (
   },
   data = {}
 ) {
+  // log
+  console.log("use fetch method ran");
+
   // set abort timeout time to 8000 if not set
   if (options.abortTimeoutTime === undefined) {
     options.abortTimeoutTime = 8000;
