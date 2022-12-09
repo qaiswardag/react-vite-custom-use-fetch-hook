@@ -1,52 +1,97 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { usePromise } from "./usePromise";
 
-export const useFetch = function (url) {
-  // data, isPending, error
+export const useFetch = function (
+  options = {
+    IsPending: true,
+    abortTimeoutTime,
+    additionalCallTime,
+  },
+  data = {}
+) {
+  // set abort timeout time to 8000 if not set
+  if (options.abortTimeoutTime === undefined) {
+    options.abortTimeoutTime = 8000;
+  }
+
+  // set response timeout to 0 if not set
+  if (options.additionalCallTime === undefined) {
+    options.additionalCallTime = 0;
+  }
+
+  // timer
+  const timer = setTimeout(() => {
+    controller.abort();
+  }, options.abortTimeoutTime);
+
+  // load data
   const [loadData, setLoadData] = useState(null);
+  // pending
   const [isPending, setIsPending] = useState(false);
-  const [error, setError] = useState(false);
+  // error
+  const [isError, setIsError] = useState(false);
+
   // controller, signal, abort timeout, additional time out
   const controller = new AbortController();
   const signal = controller.signal;
-  const abortTimeout = useState(null);
-  const additionalTime = useState(false);
+
+  // set promise
+  const promise = usePromise(options.additionalCallTime);
 
   useEffect(() => {
+    // method
     const fetchData = async function () {
+      // try
       try {
+        // set pending
         setIsPending(true);
-        const response = await fetch(url);
 
-        // throw error
-        if (response.ok === false) {
-          throw new Error(response.statusText);
+        // wait for additional response time
+        await promise;
+
+        // response
+        const response = await fetch(data.url, data);
+
+        // if loading time gets exceeded
+        if (signal.aborted) {
+          throw new Error(
+            `Unable to fetch. The loading time has been exceeded.`
+          );
         }
-        const json = await response.json();
 
-        // set data
+        // handle errors
+        if (response.status !== 200 && response.status !== 201) {
+          // throw new error with returned error messages
+          throw new Error(`Unable to fetch. ${response.statusText}`);
+        }
+
+        // convert to json
+        const json = await response.json();
+        // set load data
         setLoadData(json);
 
-        console.log("data is:", json);
-        setError(false);
+        // set error
+        setIsError(false);
+        // set pending
         setIsPending(false);
+
+        // catch errors
       } catch (err) {
-        console.log("Error while fetching data:", err);
-        setError(err);
+        // set error
+        setIsError(`Error fetching data: ${err.message}`);
+        // set pending
         setIsPending(false);
       }
-      // end method
     };
 
-    // invoke function
+    // inwoke fetch data
     fetchData();
-  }, [url]);
-
+  }, [options.url, options.abortTimeoutTime, options.additionalCallTime]);
   // return
   return {
     loadData,
     isPending,
-    error,
+    isError,
   };
 };
 
