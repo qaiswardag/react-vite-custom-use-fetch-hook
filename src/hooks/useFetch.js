@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { usePromise } from './usePromise';
+import { useState, useEffect } from "react";
+import { usePromise } from "./usePromise";
 
 export const useFetch = function (url) {
   // data, isPending, error
@@ -26,12 +26,12 @@ export const useFetch = function (url) {
 
         // set data
         setLoadData(json);
-        console.log('data is:', json);
 
+        console.log("data is:", json);
         setError(false);
         setIsPending(false);
       } catch (err) {
-        console.log('Error while fetching data:', err);
+        console.log("Error while fetching data:", err);
         setError(err);
         setIsPending(false);
       }
