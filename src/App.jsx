@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import './App.css';
-import BlogList from './components/BlogList';
+import { useState } from "react";
+import "./App.css";
+import ListContent from "./components/ListContent";
 
 function App() {
   return (
-    <div className='App'>
-      <BlogList></BlogList>
+    <div className="App">
+      <ListContent></ListContent>
     </div>
   );
 }

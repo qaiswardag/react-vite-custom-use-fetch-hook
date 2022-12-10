@@ -1,41 +1,43 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import useFetch from "../hooks/useFetch";
 import Spinner from "./loaders/Spinner.jsx";
 import Error from "./errors/Errors";
 
 function BlogList() {
-  // endpoints
+  // // endpoints
   const endpoints = {
     posts: "http://localhost:3000/posts",
     users: "http://localhost:3000/users",
   };
-
+  //
+  // fetch list
   const {
     loadData: posts,
     isPending: isPendingPosts,
     isError: isErrorPosts,
   } = useFetch(
+    endpoints.posts,
+    {
+      //method: "GET",
+    },
     {
       additionalCallTime: 400,
       //abortTimeoutTime: 200
-    },
-    {
-      url: endpoints.posts,
     }
   );
-
+  // fetch list
   const {
     loadData: users,
     isPending: isPendingUsers,
     isError: isErrorUsers,
   } = useFetch(
+    endpoints.users,
+    {
+      //method: "GET",
+    },
     {
       additionalCallTime: 800,
       //abortTimeoutTime: 500,
-    },
-    {
-      url: endpoints.users,
-      //method: "DELETE",
     }
   );
 

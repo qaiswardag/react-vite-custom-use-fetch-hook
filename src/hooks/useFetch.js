@@ -2,25 +2,26 @@ import React, { useState, useEffect } from "react";
 import { usePromise } from "./usePromise";
 
 export const useFetch = function (
+  url,
+  data = {},
   options = {
     IsPending: true,
     abortTimeoutTime,
     additionalCallTime,
-  },
-  data = {}
+  }
 ) {
-  // log
-  console.log("use fetch method ran");
-
-  // set abort timeout time to 8000 if not set
+  // set "abort timeout" time to 8000 ms if not set
   if (options.abortTimeoutTime === undefined) {
     options.abortTimeoutTime = 8000;
   }
 
-  // set response timeout to 0 if not set
+  // set "additional call time" timeout to 0 if not set
   if (options.additionalCallTime === undefined) {
     options.additionalCallTime = 0;
   }
+
+  // controller, signal, abort timeout, additional time out
+  const controller = new AbortController();
 
   // timer
   const timer = setTimeout(() => {
@@ -34,8 +35,7 @@ export const useFetch = function (
   // error
   const [isError, setIsError] = useState(false);
 
-  // controller, signal, abort timeout, additional time out
-  const controller = new AbortController();
+  // signal
   const signal = controller.signal;
 
   // set promise
@@ -49,11 +49,11 @@ export const useFetch = function (
         // set pending
         setIsPending(true);
 
-        // wait for additional response time
+        // wait for additional response time. addtional time is set when calling the method
         await promise;
 
         // response
-        const response = await fetch(data.url, data);
+        const response = await fetch(url, data);
 
         // if loading time gets exceeded
         if (signal.aborted) {
@@ -62,7 +62,7 @@ export const useFetch = function (
           );
         }
 
-        // handle errors
+        // check if response is ok
         if (response.status !== 200 && response.status !== 201) {
           // throw new error with returned error messages
           throw new Error(`Unable to fetch. ${response.statusText}`);
@@ -80,16 +80,27 @@ export const useFetch = function (
 
         // catch errors
       } catch (err) {
-        // set error
-        setIsError(`Error fetching data: ${err.message}`);
-        // set pending
-        setIsPending(false);
+        // abort fetch
+        if (err.name === "AbortError") {
+          setError("Error fetching data: The fetch was aborted.");
+        }
+        // handle errors
+        if (err.name !== "AbortError") {
+          // set error
+          setIsError(`Error fetching data: ${err.message}`);
+          // set pending
+          setIsPending(false);
+        }
+        // end catch errors
       }
     };
 
-    // inwoke fetch data
+    // invoke fetch data
     fetchData();
-  }, [options.url, options.abortTimeoutTime, options.additionalCallTime]);
+
+    // end of useEffect method
+  }, [url]);
+
   // return
   return {
     loadData,
