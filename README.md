@@ -1,7 +1,7 @@
 # Vite React
-Use Vite + React like a Pro!
+Vite + React like a Pro!
 
-Try building an Ant Design Pro-like project with Vite, which builds an easy-to-use mid-background scaffolding from scratch.
+Building project with Vite and React.
 
 ### Start JSON Server
 json-server --watch public/data.json
