@@ -1,9 +1,9 @@
 import { useState } from "react";
-import useFetch from "../hooks/useFetch";
+import useFetch2 from "../hooks/useFetch";
 import Spinner from "./loaders/Spinner.jsx";
 import Error from "./errors/Errors";
 
-function ListContent() {
+function AllContent() {
   //
   //
   //
@@ -25,7 +25,7 @@ function ListContent() {
     fetchedData: posts,
     isPending: isPendingPosts,
     isError: isErrorPosts,
-  } = useFetch(
+  } = useFetch2(
     endpoints.posts,
     {
       //method: "GET",
@@ -41,7 +41,7 @@ function ListContent() {
     fetchedData: users,
     isPending: isPendingUsers,
     isError: isErrorUsers,
-  } = useFetch(
+  } = useFetch2(
     endpoints.users,
     {
       //method: "GET",
@@ -53,7 +53,7 @@ function ListContent() {
   );
 
   return (
-    <div>
+    <div className="border-2 border-yellow-800 py-8 px-4 mb-32 mx-6 bg-yellow-50 rounded">
       <button className="bg-blue-500 text-white py-2 px-4 mb-10 mx-auto block rounded flex items-center">
         + Team member
         {2 === 4 && (
@@ -75,50 +75,50 @@ function ListContent() {
           </svg>
         )}
       </button>
-      <h1 className="text-2xl text-center mt-4">
-        Lorem ipsum dolor sit amet consectetur?
-      </h1>
-      <div className="mx-auto max-w-7xl pt-6 px-4 sm:px-6 md:py-6 lg:px-8 lg:py-6 flex grid grid-cols-2 gap-4">
-        <div className="bg-emerald-50 border-2 border-emerald-500 my-12 py-10 rounded relative">
-          <h2 className="text-3xl font-bold tracking-tight text-emerald-500 sm:text-4xl text-center">
-            <span className="block">All news posts</span>
-          </h2>
-          {posts &&
-            posts.map((post) => (
-              <div
-                key={post.id}
-                className="my-12 mx-10 pl-6 py-8 px-4 px-4 border-2 border border-gray-100 shaddow rounded bg-white"
-              >
-                <h2 className="text-xl my-2 mb-8 font-semibold">
-                  {post.title}
-                </h2>
-                <p>{post.body}</p>
-              </div>
-            ))}
-          {isPendingPosts && <Spinner></Spinner>}
-          {isErrorPosts && <Error error={isErrorPosts}></Error>}
-        </div>
+      {/*<h1 className="text-2xl text-center mt-4">*/}
+      {/*  Lorem ipsum dolor sit amet consectetur?*/}
+      {/*</h1>*/}
+      {/*<div className="mx-auto max-w-7xl pt-6 px-4 sm:px-6 md:py-6 lg:px-8 lg:py-6 flex grid grid-cols-2 gap-4">*/}
+      {/*  <div className="bg-emerald-50 border-2 border-emerald-500 my-12 py-10 rounded relative">*/}
+      {/*    <h2 className="text-3xl font-bold tracking-tight text-emerald-500 sm:text-4xl text-center">*/}
+      {/*      <span className="block">All news posts</span>*/}
+      {/*    </h2>*/}
+      {/*    {posts &&*/}
+      {/*      posts.map((post) => (*/}
+      {/*        <div*/}
+      {/*          key={post.id}*/}
+      {/*          className="my-12 mx-10 pl-6 py-8 px-4 px-4 border-2 border border-gray-100 shaddow rounded bg-white"*/}
+      {/*        >*/}
+      {/*          <h2 className="text-xl my-2 mb-8 font-semibold">*/}
+      {/*            {post.title}*/}
+      {/*          </h2>*/}
+      {/*          <p>{post.body}</p>*/}
+      {/*        </div>*/}
+      {/*      ))}*/}
+      {/*    {isPendingPosts && <Spinner></Spinner>}*/}
+      {/*    {isErrorPosts && <Error error={isErrorPosts}></Error>}*/}
+      {/*  </div>*/}
 
-        <div className="bg-red-50 border-2 border-red-400 my-12 py-10 rounded relative">
-          <h2 className="text-3xl font-bold tracking-tight text-red-400 sm:text-4xl text-center">
-            <span className="block">Our team</span>
-          </h2>
-          {users &&
-            users.map((user) => (
-              <div
-                key={user.id}
-                className="my-12 mx-10 pl-6 py-8 px-4 px-4 border-2 border border-gray-100 shaddow rounded bg-white"
-              >
-                <h2 className="text-xl my-2 mb-8 font-semibold">{user.name}</h2>
-                <p>{user.job}</p>
-              </div>
-            ))}
-          {isPendingUsers && <Spinner></Spinner>}
-          {isErrorUsers && <Error error={isErrorUsers}></Error>}
-        </div>
-      </div>
+      {/*  <div className="bg-red-50 border-2 border-red-400 my-12 py-10 rounded relative">*/}
+      {/*    <h2 className="text-3xl font-bold tracking-tight text-red-400 sm:text-4xl text-center">*/}
+      {/*      <span className="block">Our team</span>*/}
+      {/*    </h2>*/}
+      {/*    {users &&*/}
+      {/*      users.map((user) => (*/}
+      {/*        <div*/}
+      {/*          key={user.id}*/}
+      {/*          className="my-12 mx-10 pl-6 py-8 px-4 px-4 border-2 border border-gray-100 shaddow rounded bg-white"*/}
+      {/*        >*/}
+      {/*          <h2 className="text-xl my-2 mb-8 font-semibold">{user.name}</h2>*/}
+      {/*          <p>{user.job}</p>*/}
+      {/*        </div>*/}
+      {/*      ))}*/}
+      {/*    {isPendingUsers && <Spinner></Spinner>}*/}
+      {/*    {isErrorUsers && <Error error={isErrorUsers}></Error>}*/}
+      {/*  </div>*/}
+      {/*</div>*/}
     </div>
   );
 }
 
-export default ListContent;
+export default AllContent;
