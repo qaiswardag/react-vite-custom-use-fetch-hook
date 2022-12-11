@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { usePromise } from "./usePromise";
 
 export const useFetch = function (
@@ -67,7 +67,6 @@ export const useFetch = function (
           // throw new error with returned error messages
           throw new Error(`Unable to fetch. ${response.statusText}`);
         }
-
         // convert to json
         const json = await response.json();
         // set load data
@@ -78,7 +77,7 @@ export const useFetch = function (
         // set pending
         setIsPending(false);
 
-        // catch errors
+        // catch
       } catch (err) {
         // abort fetch
         if (err.name === "AbortError") {
@@ -91,7 +90,8 @@ export const useFetch = function (
           // set pending
           setIsPending(false);
         }
-        // end catch errors
+
+        // end catch
       }
     };
 
