@@ -41,8 +41,9 @@ export const useFetch = function (
   // set promise
   const promise = usePromise(customFetchOptions.additionalCallTime);
 
-  const request = async function () {
-    console.log("request fn ran!");
+  // method
+  const loadData = async function () {
+    console.log("request data fn", fetchOptions);
     // try
     try {
       // set pending
@@ -104,23 +105,18 @@ export const useFetch = function (
       // end catch
     }
 
-    // end of request method
-  };
-
-  const appendData = function () {
-    console.log("append data method ran");
-
-    // end of appendData method
+    // end fetch data method
   };
 
   // return
   return {
-    request,
-    appendData,
+    loadData,
     fetchedData,
     isPending,
     isError,
   };
+
+  // end of use fetch method
 };
 
 export default useFetch;

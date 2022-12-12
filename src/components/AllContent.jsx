@@ -5,19 +5,25 @@ import Error from "./errors/Errors";
 
 function AllContent() {
   //
-  //
-  // fetch list
+  // endpoints
+  const endpoints = {
+    posts: "http://localhost:3000/posts",
+    users: "http://localhost:3000/users",
+  };
+
   const {
-    request: requestAddTeamMember,
-    appendData: appendDataAddTeamMember,
+    loadData: loadDataAddTeamMember,
     isPending: isPendingAddTeamMember,
     isError: isErrorAddTeamMember,
   } = useFetch2(
     "http://localhost:3000/users",
     {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
       body: JSON.stringify({
-        userId: 1,
         name: "Lorem ipsum",
         job: "Account Manager",
       }),
@@ -28,33 +34,9 @@ function AllContent() {
     }
   );
   //
-  //
-  useEffect(() => {
-    requestPosts();
-    requestUsers();
-  }, []);
-  //
-  //
-  // post method for adding team member
-  const addTeamMember = function () {
-    console.log("add team member fn ran");
-    requestAddTeamMember();
-    requestUsers();
-  };
-  //
-  //
-  //
-  //
-  // endpoints
-  const endpoints = {
-    posts: "http://localhost:3000/posts",
-    users: "http://localhost:3000/users",
-  };
-  //
   // fetch list
   const {
-    request: requestPosts,
-    appendData: appendDataPosts,
+    loadData: loadDataPosts,
     fetchedData: posts,
     isPending: isPendingPosts,
     isError: isErrorPosts,
@@ -71,8 +53,7 @@ function AllContent() {
 
   // fetch list
   const {
-    request: requestUsers,
-    appendData: appendDataUsers,
+    loadData: loadDataUsers,
     fetchedData: users,
     isPending: isPendingUsers,
     isError: isErrorUsers,
@@ -86,6 +67,21 @@ function AllContent() {
       //abortTimeoutTime: 500,
     }
   );
+
+  // use effect
+  useEffect(() => {
+    loadDataPosts();
+    loadDataUsers();
+  }, []);
+  //
+  //
+  //
+  //
+  // post method for adding team member
+  const addTeamMember = function () {
+    console.log("add team member fn ran");
+    loadDataAddTeamMember();
+  };
 
   return (
     <div className="border-2 border-yellow-800 py-8 px-4 mb-32 mx-6 bg-yellow-50 rounded">
