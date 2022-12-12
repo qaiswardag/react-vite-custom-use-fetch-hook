@@ -41,73 +41,82 @@ export const useFetch = function (
   // set promise
   const promise = usePromise(customFetchOptions.additionalCallTime);
 
-  useEffect(() => {
-    // method
-    const fetchData = async function () {
-      // try
-      try {
-        // set pending
-        setIsPending(true);
+  const request = async function () {
+    console.log("request fn ran!");
+    // try
+    try {
+      // set pending
+      setIsPending(true);
 
-        // wait for additional response time. additional time is set when calling the method
-        await promise;
+      // wait for additional response time. additional time is set when calling the method
+      await promise;
 
-        // response
-        const response = await fetch(url, fetchOptions);
+      // response
+      const response = await fetch(url, fetchOptions);
 
-        // if loading time gets exceeded
-        if (signal.aborted) {
-          throw new Error(
-            `Unable to fetch. The loading time has been exceeded.`
-          );
-        }
+      // if loading time gets exceeded
+      if (signal.aborted) {
+        throw new Error(`Unable to fetch. The loading time has been exceeded.`);
+      }
 
-        // check if response is ok
-        if (response.status !== 200 && response.status !== 201) {
-          // throw new error with returned error messages
-          throw new Error(`Unable to fetch. ${response.statusText}`);
-        }
+      // check if response is ok
+      if (response.status !== 200 && response.status !== 201) {
+        // throw new error with returned error messages
+        throw new Error(`Unable to fetch. ${response.statusText}`);
+      }
+
+      // set variable for content type.
+      // application/json or text/html
+      const contentType = response.headers.get("content-type");
+
+      // check if request is application/json in the request header
+      if (contentType.includes("application/json")) {
         // convert to json
         const json = await response.json();
         // set fetched data
         setFetchedData(json);
+      }
 
-        // set error
-        setIsError(false);
-        // set pending
-        setIsPending(false);
+      // set error
+      setIsError(false);
+      // set pending
+      setIsPending(false);
 
+      // clear timeout
+      clearTimeout(timer);
+
+      // catch
+    } catch (err) {
+      // abort fetch
+      if (err.name === "AbortError") {
+        setIsError("Error fetching data: The fetch was aborted.");
+      }
+      // handle errors
+      if (err.name !== "AbortError") {
         // clear timeout
         clearTimeout(timer);
-
-        // catch
-      } catch (err) {
-        // abort fetch
-        if (err.name === "AbortError") {
-          setIsError("Error fetching data: The fetch was aborted.");
-        }
-        // handle errors
-        if (err.name !== "AbortError") {
-          // clear timeout
-          clearTimeout(timer);
-          // set error
-          setIsError(`Error fetching data: ${err.message}`);
-          // set pending
-          setIsPending(false);
-        }
-
-        // end catch
+        // set error
+        setIsError(`Error fetching data: ${err.message}`);
+        // set pending
+        setIsPending(false);
       }
-    };
 
-    // invoke fetch data
-    fetchData();
+      // end catch
+    }
 
-    // end of useEffect method
-  }, [url]);
+    // end of request method
+  };
+
+  const appendData = function () {
+    console.log("append data method ran");
+
+    // end of appendData method
+  };
 
   // return
   return {
+    request,
+    appendData,
     fetchedData,
     isPending,
     isError,

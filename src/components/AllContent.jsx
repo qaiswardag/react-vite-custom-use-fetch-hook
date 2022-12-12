@@ -1,15 +1,46 @@
-import { useState } from "react";
-import useFetch2 from "../hooks/useFetch";
+import { useEffect, useState } from "react";
+import useFetch2 from "../hooks/useFetch2";
 import Spinner from "./loaders/Spinner.jsx";
 import Error from "./errors/Errors";
 
 function AllContent() {
   //
   //
+  // fetch list
+  const {
+    request: requestAddTeamMember,
+    appendData: appendDataAddTeamMember,
+    isPending: isPendingAddTeamMember,
+    isError: isErrorAddTeamMember,
+  } = useFetch2(
+    "http://localhost:3000/users",
+    {
+      method: "POST",
+      body: JSON.stringify({
+        userId: 1,
+        name: "Lorem ipsum",
+        job: "Account Manager",
+      }),
+    },
+    {
+      additionalCallTime: 2000,
+      abortTimeoutTime: 4000,
+    }
+  );
   //
   //
-  // POST METHOD
-
+  useEffect(() => {
+    requestPosts();
+    requestUsers();
+  }, []);
+  //
+  //
+  // post method for adding team member
+  const addTeamMember = function () {
+    console.log("add team member fn ran");
+    requestAddTeamMember();
+    requestUsers();
+  };
   //
   //
   //
@@ -22,6 +53,8 @@ function AllContent() {
   //
   // fetch list
   const {
+    request: requestPosts,
+    appendData: appendDataPosts,
     fetchedData: posts,
     isPending: isPendingPosts,
     isError: isErrorPosts,
@@ -38,6 +71,8 @@ function AllContent() {
 
   // fetch list
   const {
+    request: requestUsers,
+    appendData: appendDataUsers,
     fetchedData: users,
     isPending: isPendingUsers,
     isError: isErrorUsers,
@@ -54,9 +89,12 @@ function AllContent() {
 
   return (
     <div className="border-2 border-yellow-800 py-8 px-4 mb-32 mx-6 bg-yellow-50 rounded">
-      <button className="bg-blue-500 text-white py-2 px-4 mb-10 mx-auto block rounded flex items-center">
+      <button
+        onClick={addTeamMember}
+        className="bg-blue-500 text-white py-2 px-4 mb-10 mx-auto block rounded flex items-center"
+      >
         + Team member
-        {2 === 4 && (
+        {isPendingAddTeamMember && (
           <svg
             role="status"
             className="inline ml-4 w-4 h-4 text-white animate-spin dark:text-gray-600"
@@ -75,48 +113,48 @@ function AllContent() {
           </svg>
         )}
       </button>
-      {/*<h1 className="text-2xl text-center mt-4">*/}
-      {/*  Lorem ipsum dolor sit amet consectetur?*/}
-      {/*</h1>*/}
-      {/*<div className="mx-auto max-w-7xl pt-6 px-4 sm:px-6 md:py-6 lg:px-8 lg:py-6 flex grid grid-cols-2 gap-4">*/}
-      {/*  <div className="bg-emerald-50 border-2 border-emerald-500 my-12 py-10 rounded relative">*/}
-      {/*    <h2 className="text-3xl font-bold tracking-tight text-emerald-500 sm:text-4xl text-center">*/}
-      {/*      <span className="block">All news posts</span>*/}
-      {/*    </h2>*/}
-      {/*    {posts &&*/}
-      {/*      posts.map((post) => (*/}
-      {/*        <div*/}
-      {/*          key={post.id}*/}
-      {/*          className="my-12 mx-10 pl-6 py-8 px-4 px-4 border-2 border border-gray-100 shaddow rounded bg-white"*/}
-      {/*        >*/}
-      {/*          <h2 className="text-xl my-2 mb-8 font-semibold">*/}
-      {/*            {post.title}*/}
-      {/*          </h2>*/}
-      {/*          <p>{post.body}</p>*/}
-      {/*        </div>*/}
-      {/*      ))}*/}
-      {/*    {isPendingPosts && <Spinner></Spinner>}*/}
-      {/*    {isErrorPosts && <Error error={isErrorPosts}></Error>}*/}
-      {/*  </div>*/}
+      <h1 className="text-2xl text-center mt-4">
+        Lorem ipsum dolor sit amet consectetur?
+      </h1>
+      <div className="mx-auto max-w-7xl pt-6 px-4 sm:px-6 md:py-6 lg:px-8 lg:py-6 flex grid grid-cols-2 gap-4">
+        <div className="bg-emerald-50 border-2 border-emerald-500 my-12 py-10 rounded relative">
+          <h2 className="text-3xl font-bold tracking-tight text-emerald-500 sm:text-4xl text-center">
+            <span className="block">All news posts</span>
+          </h2>
+          {posts &&
+            posts.map((post) => (
+              <div
+                key={post.id}
+                className="my-12 mx-10 pl-6 py-8 px-4 px-4 border-2 border border-gray-100 shaddow rounded bg-white"
+              >
+                <h2 className="text-xl my-2 mb-8 font-semibold">
+                  {post.title}
+                </h2>
+                <p>{post.body}</p>
+              </div>
+            ))}
+          {isPendingPosts && <Spinner></Spinner>}
+          {isErrorPosts && <Error error={isErrorPosts}></Error>}
+        </div>
 
-      {/*  <div className="bg-red-50 border-2 border-red-400 my-12 py-10 rounded relative">*/}
-      {/*    <h2 className="text-3xl font-bold tracking-tight text-red-400 sm:text-4xl text-center">*/}
-      {/*      <span className="block">Our team</span>*/}
-      {/*    </h2>*/}
-      {/*    {users &&*/}
-      {/*      users.map((user) => (*/}
-      {/*        <div*/}
-      {/*          key={user.id}*/}
-      {/*          className="my-12 mx-10 pl-6 py-8 px-4 px-4 border-2 border border-gray-100 shaddow rounded bg-white"*/}
-      {/*        >*/}
-      {/*          <h2 className="text-xl my-2 mb-8 font-semibold">{user.name}</h2>*/}
-      {/*          <p>{user.job}</p>*/}
-      {/*        </div>*/}
-      {/*      ))}*/}
-      {/*    {isPendingUsers && <Spinner></Spinner>}*/}
-      {/*    {isErrorUsers && <Error error={isErrorUsers}></Error>}*/}
-      {/*  </div>*/}
-      {/*</div>*/}
+        <div className="bg-red-50 border-2 border-red-400 my-12 py-10 rounded relative">
+          <h2 className="text-3xl font-bold tracking-tight text-red-400 sm:text-4xl text-center">
+            <span className="block">Our team</span>
+          </h2>
+          {users &&
+            users.reverse().map((user) => (
+              <div
+                key={user.id}
+                className="my-12 mx-10 pl-6 py-8 px-4 px-4 border-2 border border-gray-100 shaddow rounded bg-white"
+              >
+                <h2 className="text-xl my-2 mb-8 font-semibold">{user.name}</h2>
+                <p>{user.job}</p>
+              </div>
+            ))}
+          {isPendingUsers && <Spinner></Spinner>}
+          {isErrorUsers && <Error error={isErrorUsers}></Error>}
+        </div>
+      </div>
     </div>
   );
 }

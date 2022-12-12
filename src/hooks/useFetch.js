@@ -67,10 +67,18 @@ export const useFetch = function (
           // throw new error with returned error messages
           throw new Error(`Unable to fetch. ${response.statusText}`);
         }
-        // convert to json
-        const json = await response.json();
-        // set fetched data
-        setFetchedData(json);
+
+        // set variable for content type.
+        // application/json or text/html
+        const contentType = response.headers.get("content-type");
+
+        // check if request is application/json in the request header
+        if (contentType.includes("application/json")) {
+          // convert to json
+          const json = await response.json();
+          // set fetched data
+          setFetchedData(json);
+        }
 
         // set error
         setIsError(false);
