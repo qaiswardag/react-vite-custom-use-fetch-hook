@@ -1,5 +1,4 @@
 import { useState } from "react";
-import ListContent from "./components/ListContent";
 import AllContent from "./components/AllContent.jsx";
 import "./App.css";
 
@@ -16,15 +15,6 @@ function App() {
         Show or hide lists
       </button>
       {show && <AllContent></AllContent>}
-
-      {/*<button*/}
-      {/*  onClick={() => setShow(show ? false : true)}*/}
-      {/*  className="bg-emerald-500 text-white py-2 px-6 mb-2 mx-auto block rounded"*/}
-      {/*>*/}
-      {/*  Show or hide lists*/}
-      {/*</button>*/}
-
-      {/*{show && <ListContent></ListContent>}*/}
     </div>
   );
 }

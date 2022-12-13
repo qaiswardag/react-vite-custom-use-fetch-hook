@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import useFetch2 from "../hooks/useFetch2";
+import useFetch from "../hooks/useFetch";
 import Spinner from "./loaders/Spinner.jsx";
 import Error from "./errors/Errors";
 
@@ -15,7 +15,7 @@ function AllContent() {
     loadData: loadDataAddTeamMember,
     isPending: isPendingAddTeamMember,
     isError: isErrorAddTeamMember,
-  } = useFetch2(
+  } = useFetch(
     "http://localhost:3000/users",
     {
       method: "POST",
@@ -40,7 +40,7 @@ function AllContent() {
     fetchedData: posts,
     isPending: isPendingPosts,
     isError: isErrorPosts,
-  } = useFetch2(
+  } = useFetch(
     endpoints.posts,
     {
       //method: "GET",
@@ -57,13 +57,13 @@ function AllContent() {
     fetchedData: users,
     isPending: isPendingUsers,
     isError: isErrorUsers,
-  } = useFetch2(
+  } = useFetch(
     endpoints.users,
     {
       //method: "GET",
     },
     {
-      additionalCallTime: 1000,
+      additionalCallTime: 1500,
       //abortTimeoutTime: 500,
     }
   );
@@ -118,6 +118,7 @@ function AllContent() {
             <span className="block">All news posts</span>
           </h2>
           {posts &&
+            Array.isArray(posts) &&
             posts.map((post) => (
               <div
                 key={post.id}
@@ -138,7 +139,8 @@ function AllContent() {
             <span className="block">Our team</span>
           </h2>
           {users &&
-            users.reverse().map((user) => (
+            Array.isArray(users) &&
+            users.map((user) => (
               <div
                 key={user.id}
                 className="my-12 mx-10 pl-6 py-8 px-4 px-4 border-2 border border-gray-100 shaddow rounded bg-white"
