@@ -21,7 +21,6 @@ function AllContent() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        // 'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: JSON.stringify({
         name: "Lorem ipsum",
@@ -29,8 +28,8 @@ function AllContent() {
       }),
     },
     {
-      additionalCallTime: 2000,
-      abortTimeoutTime: 4000,
+      // additionalCallTime: 1000,
+      // abortTimeoutTime: 2000,
     }
   );
   //
@@ -46,8 +45,8 @@ function AllContent() {
       //method: "GET",
     },
     {
-      additionalCallTime: 500,
-      //abortTimeoutTime: 1000,
+      // additionalCallTime: 500,
+      // abortTimeoutTime: 2000,
     }
   );
 
@@ -63,8 +62,8 @@ function AllContent() {
       //method: "GET",
     },
     {
-      additionalCallTime: 1500,
-      //abortTimeoutTime: 500,
+      // additionalCallTime: 500,
+      // abortTimeoutTime: 2000,
     }
   );
 
@@ -85,6 +84,10 @@ function AllContent() {
 
   return (
     <div className="border-2 border-yellow-800 py-8 px-4 mb-32 mx-6 bg-yellow-50 rounded">
+      <p>Fejl er: {isErrorPosts}</p>
+      {isErrorAddTeamMember && (
+        <p className="text-center text-red-600">{isErrorAddTeamMember}</p>
+      )}
       <button
         onClick={addTeamMember}
         className="bg-blue-500 text-white py-2 px-4 mb-10 mx-auto block rounded flex items-center"
@@ -117,7 +120,8 @@ function AllContent() {
           <h2 className="text-3xl font-bold tracking-tight text-emerald-500 sm:text-4xl text-center">
             <span className="block">All news posts</span>
           </h2>
-          {posts &&
+          {!isErrorPosts &&
+            posts &&
             Array.isArray(posts) &&
             posts.map((post) => (
               <div
@@ -138,7 +142,8 @@ function AllContent() {
           <h2 className="text-3xl font-bold tracking-tight text-red-400 sm:text-4xl text-center">
             <span className="block">Our team</span>
           </h2>
-          {users &&
+          {!isErrorUsers &&
+            users &&
             Array.isArray(users) &&
             users.map((user) => (
               <div
