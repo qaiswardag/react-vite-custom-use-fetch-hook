@@ -10,14 +10,13 @@ export const useFetch = function (
     abortTimeoutTime,
   }
 ) {
-  // set "abort timeout" time to 8000 ms if not set
-  if (customFetchOptions.abortTimeoutTime === undefined) {
-    customFetchOptions.abortTimeoutTime = 80;
-  }
-
   // set "additional call time" timeout to 0 if not set
   if (customFetchOptions.additionalCallTime === undefined) {
-    customFetchOptions.additionalCallTime = 200;
+    customFetchOptions.additionalCallTime = 1000;
+  }
+  // set "abort timeout" time to 8000 ms if not set
+  if (customFetchOptions.abortTimeoutTime === undefined) {
+    customFetchOptions.abortTimeoutTime = 8000;
   }
 
   // controller, signal, abort timeout, additional time out
@@ -53,7 +52,10 @@ export const useFetch = function (
 
       // if loading time gets exceeded
       if (signal.aborted) {
-        throw new Error(`Unable to fetch. The loading time has been exceeded.`);
+        console.log("cam here");
+        return Promise.reject(Error(`The loading time has been exceeded.`));
+
+        //throw new Error(`Unable to fetch. The loading time has been exceeded.`);
       }
 
       // response
