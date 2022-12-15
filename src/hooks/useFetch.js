@@ -10,52 +10,50 @@ export const useFetch = function (
     abortTimeoutTime,
   }
 ) {
-  // set "additional call time" timeout to 0 if not set
-  if (customFetchOptions.additionalCallTime === undefined) {
-    customFetchOptions.additionalCallTime = 1000;
-  }
-  // set "abort timeout" time to 8000 ms if not set
-  if (customFetchOptions.abortTimeoutTime === undefined) {
-    customFetchOptions.abortTimeoutTime = 8000;
-  }
+  // is pending, is error, fetched data
+  const [isPending, setIsPending] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [fetchedData, setFetchedData] = useState(null);
 
   // controller, signal, abort timeout, additional time out
   const controller = new AbortController();
-
-  // abort
-  const timer = setTimeout(() => {
-    controller.abort();
-  }, customFetchOptions.abortTimeoutTime);
-
-  // load data
-  const [fetchedData, setFetchedData] = useState(null);
-  // pending
-  const [isPending, setIsPending] = useState(false);
-  // error
-  const [isError, setIsError] = useState(false);
-
-  // signal
   const signal = controller.signal;
-
-  // set promise
-  const promise = usePromise(customFetchOptions.additionalCallTime);
 
   // method
   const loadData = async function () {
+    // set "is pending" to null if not set
+    if (customFetchOptions.isPending === undefined) {
+      customFetchOptions.isPending = true;
+    }
+
+    // set "additional call time" timeout to 0 if not set
+    if (customFetchOptions.additionalCallTime === undefined) {
+      customFetchOptions.additionalCallTime = 1000;
+    }
+    // set "abort timeout" time to 8000 ms if not set
+    if (customFetchOptions.abortTimeoutTime === undefined) {
+      customFetchOptions.abortTimeoutTime = 5000;
+    }
+
+    // abort
+    const timer = setTimeout(() => {
+      controller.abort();
+    }, customFetchOptions.abortTimeoutTime);
+
     // try
     try {
-      // set pending
-      setIsPending(true);
+      setIsPending(customFetchOptions.isPending);
+      // set promise
+      const promise = usePromise(customFetchOptions.additionalCallTime);
 
       // wait for additional response time. additional time is set when calling the method
       await promise;
 
       // if loading time gets exceeded
       if (signal.aborted) {
-        console.log("cam here");
+        setIsPending(false);
+        setIsError(false);
         return Promise.reject(Error(`The loading time has been exceeded.`));
-
-        //throw new Error(`Unable to fetch. The loading time has been exceeded.`);
       }
 
       // response
@@ -70,7 +68,6 @@ export const useFetch = function (
       // set variable for content type.
       // application/json
       const contentType = response.headers.get("content-type");
-
       // check if request is application/json in the request header
       if (contentType.includes("application/json")) {
         // convert to json
@@ -85,6 +82,7 @@ export const useFetch = function (
       setIsPending(false);
       // clear timeout
       clearTimeout(timer);
+
       // response
       return response;
 
@@ -94,7 +92,7 @@ export const useFetch = function (
       clearTimeout(timer);
       // set pending
       setIsPending(false);
-      // response
+      // response;
       const response = await fetch(url, fetchOptions);
 
       // abort fetch
@@ -109,33 +107,37 @@ export const useFetch = function (
         // check if request is application/json in the request header
         if (contentType.includes("application/json")) {
           // json
-          const json = await response.json();
+          const collectingErrorsJson = await response.json();
 
           // check if fetched data is a string
-          if (typeof json === "string") {
-            setIsError(`Error fetching data: ${err.message}. ${json}`);
+          if (typeof collectingErrorsJson === "string") {
+            setIsError(
+              `Error fetching data: ${err.message}. ${collectingErrorsJson}`
+            );
           }
 
-          // check if fetched data is an object. If true insert all values into error.value
-          if (Array.isArray(json)) {
-            setIsError(`Error fetching data: ${err.message} ${json.join(" ")}`);
+          // check if fetched data is an object
+          if (Array.isArray(collectingErrorsJson)) {
+            setIsError(
+              `Error fetching data: ${err.message} ${collectingErrorsJson.join(
+                " "
+              )}`
+            );
           }
 
-          // check if fetched data is an object. If true insert all values into error.value
+          // check if fetched data is an object
           if (
-            typeof json === "object" &&
-            !Array.isArray(json) &&
-            json !== null
+            typeof collectingErrorsJson === "object" &&
+            !Array.isArray(collectingErrorsJson) &&
+            collectingErrorsJson !== null
           ) {
-            const errorsReceived = Object.values(json);
+            // convert errors received as object to array
+            const errorsReceived = Object.values(collectingErrorsJson);
 
             setIsError(
               `Error fetching data: ${err.message} ${errorsReceived.join(" ")}`
             );
           }
-
-          // set fetched data as we are receiving json in the fetch
-          setFetchedData(json);
 
           // end if content type is application/json
         }
