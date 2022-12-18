@@ -84,11 +84,8 @@ export const useFetch = function (
 
       // catch
     } catch (err) {
-      // clear timeout
       clearTimeout(timer);
-      // set pending
       setIsPending(false);
-      // response;
       const response = await fetch(url, fetchOptions);
 
       // abort fetch
