@@ -43,7 +43,7 @@ function AllContent() {
     endpoints.posts,
     {},
     {
-      additionalCallTime: 2000,
+      additionalCallTime: 500,
       //abortTimeoutTime: 800,
     }
   );
@@ -59,7 +59,7 @@ function AllContent() {
     {},
     {
       additionalCallTime: 1000,
-      abortTimeoutTime: 8000,
+      //abortTimeoutTime: 8000,
     }
   );
 

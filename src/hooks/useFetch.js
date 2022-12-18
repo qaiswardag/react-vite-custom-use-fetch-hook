@@ -21,18 +21,17 @@ export const useFetch = function (
 
   // method
   const loadData = async function () {
-    // set "is pending" to null if not set
+    // set "is pending"
     if (customFetchOptions.isPending === undefined) {
       customFetchOptions.isPending = true;
     }
-
     // set "additional call time" timeout to 0 if not set
     if (customFetchOptions.additionalCallTime === undefined) {
-      customFetchOptions.additionalCallTime = 1000;
+      customFetchOptions.additionalCallTime = 0;
     }
     // set "abort timeout" time to 8000 ms if not set
     if (customFetchOptions.abortTimeoutTime === undefined) {
-      customFetchOptions.abortTimeoutTime = 5000;
+      customFetchOptions.abortTimeoutTime = 8000;
     }
 
     // abort
@@ -51,22 +50,22 @@ export const useFetch = function (
 
       // if loading time gets exceeded
       if (signal.aborted) {
-        setIsPending(false);
         setIsError(false);
+        setIsPending(false);
+        clearTimeout(timer);
         return Promise.reject(Error(`The loading time has been exceeded.`));
       }
 
       // response
       const response = await fetch(url, fetchOptions);
 
-      // check if response is ok
+      // check if response is ok. if not throw error
       if (response.status !== 200 && response.status !== 201) {
         // throw new error with returned error messages
         throw new Error(`Unable to fetch. ${response.statusText}`);
       }
 
-      // set variable for content type.
-      // application/json
+      // set variable for content type application/json
       const contentType = response.headers.get("content-type");
       // check if request is application/json in the request header
       if (contentType.includes("application/json")) {
@@ -76,11 +75,8 @@ export const useFetch = function (
         setFetchedData(json);
       }
 
-      // set error
       setIsError(false);
-      // set pending
       setIsPending(false);
-      // clear timeout
       clearTimeout(timer);
 
       // response
@@ -101,12 +97,11 @@ export const useFetch = function (
       }
       // handle errors
       if (err.name !== "AbortError") {
-        // set variable for content type.
-        // application/json
+        // set variable for content type application/json
         const contentType = response.headers.get("content-type");
         // check if request is application/json in the request header
         if (contentType.includes("application/json")) {
-          // json
+          // collect errors and convert errors to json
           const collectingErrorsJson = await response.json();
 
           // check if fetched data is a string
@@ -119,7 +114,7 @@ export const useFetch = function (
           // check if fetched data is an object
           if (Array.isArray(collectingErrorsJson)) {
             setIsError(
-              `Error fetching data: ${err.message} ${collectingErrorsJson.join(
+              `Error fetching data: ${err.message}. ${collectingErrorsJson.join(
                 " "
               )}`
             );
@@ -135,7 +130,7 @@ export const useFetch = function (
             const errorsReceived = Object.values(collectingErrorsJson);
 
             setIsError(
-              `Error fetching data: ${err.message} ${errorsReceived.join(" ")}`
+              `Error fetching data: ${err.message}. ${errorsReceived.join(" ")}`
             );
           }
 
@@ -145,7 +140,6 @@ export const useFetch = function (
         // check if request is application/json in the request header
         if (!contentType.includes("application/json")) {
           setIsError(`Error fetching data: ${err.message}`);
-          // set fetched data
         }
       }
 
