@@ -88,7 +88,6 @@ export const useFetch = function () {
 
       // catch
     } catch (err) {
-      console.log('came to catch');
       clearTimeout(timer);
       setIsPending(false);
       const response = await fetch(url, fetchOptions);
@@ -109,7 +108,6 @@ export const useFetch = function () {
 
           // check if fetched data is a string
           if (typeof collectingErrorsJson === 'string') {
-            console.log('came to string');
             // qais -> updated this
             setIsError(`${collectingErrorsJson}`);
           }

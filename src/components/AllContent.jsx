@@ -7,9 +7,9 @@ function AllContent() {
   //
   // endpoints
   const endpoints = {
-    posts: 'http://localhost:3000/posts',
-    users: 'http://localhost:3000/users',
-    products: 'http://127.0.0.1:50004/api/test-api',
+    posts: 'https://jsonplaceholder.typicode.com/posts',
+    users: 'https://jsonplaceholder.typicode.com/users',
+    products: 'http://localhost:50004/api/test-api',
   };
 
   // const {
@@ -62,10 +62,9 @@ function AllContent() {
         await loadDataPosts(
           endpoints.posts,
           {},
-          { additionalCallTime: 1000, abortTimeoutTime: 8000 }
+          { additionalCallTime: 300, abortTimeoutTime: 8000 }
         );
       } catch (err) {
-        console.log(`Error: ${err}`);
         setIsErrorPosts((prevError) => [
           `${err}. ${prevError ? prevError : ''}`,
         ]);
@@ -105,7 +104,7 @@ function AllContent() {
         await loadDataUsers(
           endpoints.users,
           {},
-          { additionalCallTime: 300, abortTimeoutTime: 0 }
+          { additionalCallTime: 600, abortTimeoutTime: 8000 }
         );
       } catch (err) {
         setIsErrorUsers((prevError) => [
@@ -143,7 +142,7 @@ function AllContent() {
         await loadDataProducts(
           endpoints.products,
           {},
-          { additionalCallTime: 500, abortTimeoutTime: 8000 }
+          { additionalCallTime: 1100, abortTimeoutTime: 8000 }
         );
       } catch (err) {
         setIsErrorProducts((prevError) => [
@@ -218,7 +217,7 @@ function AllContent() {
         {/* POSTS  END */}
 
         {/* TEAM  START */}
-        <div className='bg-emerald-50 border-2 border-emerald-500 my-12 py-10 rounded relative'>
+        <div className='bg-yellow-100 border-2 border-emerald-500 my-12 py-10 rounded relative'>
           <h2 className='text-3xl font-bold tracking-tight text-emerald-500 sm:text-4xl text-center'>
             <span className='block'>Team</span>
           </h2>
@@ -231,7 +230,7 @@ function AllContent() {
                 className='my-12 mx-10 pl-6 py-8 px-4 px-4 border-2 border border-gray-100 shaddow rounded bg-white'
               >
                 <h2 className='text-xl my-2 mb-8 font-semibold'>{user.name}</h2>
-                <p>{user.job}</p>
+                <p>{user.email}</p>
               </div>
             ))}
           {isPendingUsers && <Spinner></Spinner>}
