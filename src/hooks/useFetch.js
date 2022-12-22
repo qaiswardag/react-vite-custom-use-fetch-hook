@@ -1,15 +1,7 @@
-import { useState } from "react";
-import { usePromise } from "./usePromise";
+import { useState } from 'react';
+import { usePromise } from './usePromise';
 
-export const useFetch = function (
-  url,
-  fetchOptions = {},
-  customFetchOptions = {
-    isPending,
-    additionalCallTime,
-    abortTimeoutTime,
-  }
-) {
+export const useFetch = function () {
   // is pending, is error, fetched data
   const [isPending, setIsPending] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -17,10 +9,17 @@ export const useFetch = function (
 
   // controller, signal, abort timeout, additional time out
   const controller = new AbortController();
-  const signal = controller.signal;
 
   // method
-  const loadData = async function () {
+  const loadData = async function (
+    url,
+    fetchOptions = {},
+    customFetchOptions = {
+      isPending,
+      additionalCallTime,
+      abortTimeoutTime,
+    }
+  ) {
     // set "is pending"
     if (customFetchOptions.isPending === undefined) {
       customFetchOptions.isPending = true;
@@ -49,11 +48,15 @@ export const useFetch = function (
       await promise;
 
       // if loading time gets exceeded
-      if (signal.aborted) {
+      if (controller.signal.aborted) {
         setIsError(false);
         setIsPending(false);
         clearTimeout(timer);
-        return Promise.reject(Error(`The loading time has been exceeded.`));
+        return Promise.reject(
+          Error(
+            `408. The loading time has been exceeded. Please refresh this page`
+          )
+        );
       }
 
       // response
@@ -62,13 +65,13 @@ export const useFetch = function (
       // check if response is ok. if not throw error
       if (response.status !== 200 && response.status !== 201) {
         // throw new error with returned error messages
-        throw new Error(`Unable to fetch. ${response.statusText}`);
+        throw new Error(`${response.status}. ${response.statusText}`);
       }
 
       // set variable for content type application/json
-      const contentType = response.headers.get("content-type");
+      const contentType = response.headers.get('content-type');
       // check if request is application/json in the request header
-      if (contentType.includes("application/json")) {
+      if (contentType.includes('application/json')) {
         // convert to json
         const json = await response.json();
         // set fetched data
@@ -79,69 +82,68 @@ export const useFetch = function (
       setIsPending(false);
       clearTimeout(timer);
 
-      // response
-      return response;
+      // return fetched data
+      // qais -> updated this
+      return fetchedData;
 
       // catch
     } catch (err) {
+      console.log('came to catch');
       clearTimeout(timer);
       setIsPending(false);
       const response = await fetch(url, fetchOptions);
 
       // abort fetch
-      if (err.name === "AbortError") {
-        setIsError("Error fetching data: The fetch was aborted.");
+      if (err.name === 'AbortError') {
+        setIsError('Error fetching data: The fetch was aborted');
       }
       // handle errors
-      if (err.name !== "AbortError") {
+      if (err.name !== 'AbortError') {
         // set variable for content type application/json
-        const contentType = response.headers.get("content-type");
+        const contentType = response.headers.get('content-type');
+
         // check if request is application/json in the request header
-        if (contentType.includes("application/json")) {
+        if (contentType.includes('application/json')) {
           // collect errors and convert errors to json
           const collectingErrorsJson = await response.json();
 
           // check if fetched data is a string
-          if (typeof collectingErrorsJson === "string") {
-            setIsError(
-              `Error fetching data: ${err.message}. ${collectingErrorsJson}`
-            );
+          if (typeof collectingErrorsJson === 'string') {
+            console.log('came to string');
+            // qais -> updated this
+            setIsError(`${collectingErrorsJson}`);
           }
 
           // check if fetched data is an object
           if (Array.isArray(collectingErrorsJson)) {
-            setIsError(
-              `Error fetching data: ${err.message}. ${collectingErrorsJson.join(
-                " "
-              )}`
-            );
+            // qais -> updated this
+            setIsError(`${collectingErrorsJson.join(' ')}`);
           }
 
           // check if fetched data is an object
           if (
-            typeof collectingErrorsJson === "object" &&
+            typeof collectingErrorsJson === 'object' &&
             !Array.isArray(collectingErrorsJson) &&
             collectingErrorsJson !== null
           ) {
             // convert errors received as object to array
             const errorsReceived = Object.values(collectingErrorsJson);
-
-            setIsError(
-              `Error fetching data: ${err.message}. ${errorsReceived.join(" ")}`
-            );
+            // qais -> updated this
+            setIsError(`${errorsReceived.join(' ')}`);
           }
 
           // end if content type is application/json
         }
 
         // check if request is application/json in the request header
-        if (!contentType.includes("application/json")) {
-          setIsError(`Error fetching data: ${err.message}`);
+        if (!contentType.includes('application/json')) {
+          setIsError(`${err.message}`);
         }
       }
 
-      // response
-      return response;
+      // throw
+      // qais -> updated this
+      throw err;
       // end catch
     }
 
@@ -154,6 +156,7 @@ export const useFetch = function (
     fetchedData,
     isPending,
     isError,
+    setIsError,
   };
 
   // end of use fetch method
