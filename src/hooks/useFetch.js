@@ -83,7 +83,6 @@ export const useFetch = function () {
       clearTimeout(timer);
 
       // return fetched data
-      // qais -> updated this
       return fetchedData;
 
       // catch
@@ -108,13 +107,11 @@ export const useFetch = function () {
 
           // check if fetched data is a string
           if (typeof collectingErrorsJson === 'string') {
-            // qais -> updated this
             setIsError(`${collectingErrorsJson}`);
           }
 
           // check if fetched data is an object
           if (Array.isArray(collectingErrorsJson)) {
-            // qais -> updated this
             setIsError(`${collectingErrorsJson.join(' ')}`);
           }
 
@@ -126,7 +123,6 @@ export const useFetch = function () {
           ) {
             // convert errors received as object to array
             const errorsReceived = Object.values(collectingErrorsJson);
-            // qais -> updated this
             setIsError(`${errorsReceived.join(' ')}`);
           }
 
@@ -140,7 +136,6 @@ export const useFetch = function () {
       }
 
       // throw
-      // qais -> updated this
       throw err;
       // end catch
     }
