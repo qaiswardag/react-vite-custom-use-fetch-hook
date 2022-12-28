@@ -82,7 +82,7 @@ export const useFetch = function () {
         setIsPending(false);
         clearTimeout(timer);
 
-        // also return json
+        // return json
         return json;
       }
 
@@ -92,8 +92,6 @@ export const useFetch = function () {
 
       // return fetched data
       return fetchedData;
-      // also return json
-       return json;
 
       // catch
     } catch (err) {
