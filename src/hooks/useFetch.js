@@ -84,6 +84,8 @@ export const useFetch = function () {
 
       // return fetched data
       return fetchedData;
+      // also return json
+       return json;
 
       // catch
     } catch (err) {
