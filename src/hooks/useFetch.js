@@ -74,7 +74,7 @@ export const useFetch = function () {
       if (contentType.includes('application/json')) {
         // convert to json
         const json = await response.json();
-        
+
         // set fetched data
         setFetchedData(json);
 
