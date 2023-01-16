@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { usePromise } from './usePromise';
 
 export const useFetch = function () {
-  // is pending, is error, fetched data
-  const [isPending, setIsPending] = useState(false);
+  // is loading, is error, fetched data
+  const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [fetchedData, setFetchedData] = useState(null);
 
@@ -11,18 +11,18 @@ export const useFetch = function () {
   const controller = new AbortController();
 
   // method
-  const loadData = async function (
+  const getData = async function (
     url,
     fetchOptions = {},
     customFetchOptions = {
-      isPending,
+      isLoading,
       additionalCallTime,
       abortTimeoutTime,
     }
   ) {
-    // set "is pending"
-    if (customFetchOptions.isPending === undefined) {
-      customFetchOptions.isPending = true;
+    // set "is loading"
+    if (customFetchOptions.isLoading === undefined) {
+      customFetchOptions.isLoading = true;
     }
     // set "additional call time" timeout to 0 if not set
     if (customFetchOptions.additionalCallTime === undefined) {
@@ -40,7 +40,7 @@ export const useFetch = function () {
 
     // try
     try {
-      setIsPending(customFetchOptions.isPending);
+      setIsLoading(customFetchOptions.isLoading);
       // set promise
       const promise = usePromise(customFetchOptions.additionalCallTime);
 
@@ -50,7 +50,7 @@ export const useFetch = function () {
       // if loading time gets exceeded
       if (controller.signal.aborted) {
         setIsError(false);
-        setIsPending(false);
+        setIsLoading(false);
         clearTimeout(timer);
         return Promise.reject(
           Error(
@@ -79,7 +79,7 @@ export const useFetch = function () {
         setFetchedData(json);
 
         setIsError(false);
-        setIsPending(false);
+        setIsLoading(false);
         clearTimeout(timer);
 
         // return json
@@ -87,7 +87,7 @@ export const useFetch = function () {
       }
 
       setIsError(false);
-      setIsPending(false);
+      setIsLoading(false);
       clearTimeout(timer);
 
       // return fetched data
@@ -96,7 +96,7 @@ export const useFetch = function () {
       // catch
     } catch (err) {
       clearTimeout(timer);
-      setIsPending(false);
+      setIsLoading(false);
       const response = await fetch(url, fetchOptions);
 
       // abort fetch
@@ -153,9 +153,9 @@ export const useFetch = function () {
 
   // return
   return {
-    loadData,
+    getData,
     fetchedData,
-    isPending,
+    isLoading,
     isError,
     setIsError,
   };
