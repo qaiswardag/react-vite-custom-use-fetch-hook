@@ -151,7 +151,6 @@ export const useFetch = function () {
     // end fetch data method
   };
 
-  // return
   return {
     getData,
     fetchedData,
