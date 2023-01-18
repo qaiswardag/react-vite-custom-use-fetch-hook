@@ -11,7 +11,7 @@ export const useFetch = function () {
   const controller = new AbortController();
 
   // method
-  const getData = async function (
+  const handleData = async function (
     url,
     fetchOptions = {},
     customFetchOptions = {
@@ -152,7 +152,7 @@ export const useFetch = function () {
   };
 
   return {
-    getData,
+    handleData,
     fetchedData,
     isLoading,
     isError,
